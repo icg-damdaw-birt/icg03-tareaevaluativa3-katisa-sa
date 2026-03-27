@@ -117,5 +117,31 @@ describe('API de Rating', () => {
       expect(prisma.movie.findFirst).not.toHaveBeenCalled();
     });
 
+    // 5. Error de negocio: Película no existe o no es del usuario
+    it('debería devolver 404 si la película no existe o no pertenece al usuario', async () => {
+      // Simula que findFirst no encuentra nada (null)
+      prisma.movie.findFirst.mockResolvedValue(null);
+
+      const response = await request(app)
+        .patch('/api/movies/no-existe/rating')
+        .set('Authorization', 'Bearer fake-token')
+        .send({ rating: 3 });
+
+      expect(response.status).toBe(404);
+      expect(response.body.error).toBe('Película no encontrada');
+      expect(prisma.movie.update).not.toHaveBeenCalled();
+    });
+
+    // 6. Error de validación: Rating no es entero (ej. decimal)
+    it('debería devolver 400 si el rating es un decimal', async () => {
+      const response = await request(app)
+        .patch('/api/movies/movie-1/rating')
+        .set('Authorization', 'Bearer fake-token')
+        .send({ rating: 3.5 });
+
+      expect(response.status).toBe(400);
+      expect(prisma.movie.findFirst).not.toHaveBeenCalled();
+    });
+
   });
 });
