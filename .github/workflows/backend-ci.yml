@@ -1,0 +1,31 @@
+name: CI-CD API
+on:
+  push:
+    branches: ["develop"]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Descargar repositorio
+      uses: actions/checkout@v5
+
+    - name: Configurar Node.js
+      uses: actions/setup-node@v5
+
+    - name: Instalar dependencias
+      run: npm ci
+
+    - name: Ejecutar pruebas
+      run: npm test
+      env:
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      
+deploy:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+    - name: Lanzar despliegue en Render
+      env: 
+        RENDER_API_KEY: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      run -X POST "$RENDER_DEPLOY_HOOK_URL"
