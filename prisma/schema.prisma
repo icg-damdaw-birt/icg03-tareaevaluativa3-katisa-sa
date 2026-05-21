@@ -6,7 +6,7 @@ generator client {
 // - Desarrollo (UD3-4): SQLite (archivo local ./dev.db)
 // - Producción (UD5): PostgreSQL en Neon
 datasource db {
-  provider = "sqlite"  // Cambiar a "postgresql" en UD5
+  provider = "postgresql" 
 }
 
 // Usuario del sistema (alumno con su videoteca personal)
