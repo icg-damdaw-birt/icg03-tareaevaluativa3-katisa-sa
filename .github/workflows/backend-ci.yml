@@ -21,11 +21,11 @@ jobs:
       env:
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
       
-deploy:
+  deploy:
     needs: ci
     runs-on: ubuntu-latest
     steps:
     - name: Lanzar despliegue en Render
       env: 
         RENDER_API_KEY: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
-      run -X POST "$RENDER_DEPLOY_HOOK_URL"
+      run: curl -X POST "$RENDER_DEPLOY_HOOK_URL"
